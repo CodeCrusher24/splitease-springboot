@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: 'postgres:16'
+    environment:
+      - 'POSTGRES_DB=splitease_java'
+      - 'POSTGRES_USER=splitease'
+      - 'POSTGRES_PASSWORD=splitease'
+    ports:
+      - '5433:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

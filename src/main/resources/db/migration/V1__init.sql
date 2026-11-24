@@ -1,0 +1,1 @@
+-- V1: Initial schema (to be populated in Phase 2)

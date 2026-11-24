@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: splitease
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/splitease_java
+    username: splitease
+    password: splitease
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.splitease: DEBUG
+    org.hibernate.SQL: DEBUG
