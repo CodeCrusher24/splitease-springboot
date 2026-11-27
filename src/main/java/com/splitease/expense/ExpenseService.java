@@ -10,7 +10,10 @@ import com.splitease.user.User;
 import com.splitease.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.splitease.activity.ActivityLog;
+import com.splitease.activity.ActivityLogRepository;
+import java.util.Map;
+import java.time.LocalDateTime;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
+    private final ActivityLogRepository activityLogRepository;
     private final ExpenseSplitRepository expenseSplitRepository;
     private final GroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;
@@ -29,12 +33,14 @@ public class ExpenseService {
             ExpenseSplitRepository expenseSplitRepository,
             GroupRepository groupRepository,
             GroupMemberRepository groupMemberRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            ActivityLogRepository activityLogRepository // <-- NEW
     ) {
         this.expenseRepository = expenseRepository;
         this.expenseSplitRepository = expenseSplitRepository;
         this.groupRepository = groupRepository;
         this.groupMemberRepository = groupMemberRepository;
+        this.activityLogRepository = activityLogRepository;
         this.userRepository = userRepository;
     }
 
@@ -95,6 +101,18 @@ public class ExpenseService {
             splitRows.add(split);
         }
         expenseSplitRepository.saveAll(splitRows);
+        // 7.5 Log activity
+        ActivityLog log = ActivityLog.builder()
+                .group(group)
+                .actor(currentUser)
+                .action("expense_created")
+                .payload(Map.of(
+                        "expense_id", expense.getId(),
+                        "description", expense.getDescription(),
+                        "amount_minor", expense.getAmountMinor()
+                ))
+                .build();
+        activityLogRepository.save(log);
 
         // 8. Return response
         return ExpenseResponse.from(savedExpense, splitRows);

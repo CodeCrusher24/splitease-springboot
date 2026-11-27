@@ -12,4 +12,6 @@ public interface ExpenseSplitRepository extends JpaRepository<ExpenseSplit, Long
 
     @Query("SELECT s FROM ExpenseSplit s WHERE s.expense.id = :expenseId")
     List<ExpenseSplit> findByExpenseId(@Param("expenseId") Long expenseId);
+
+    List<ExpenseSplit> findAllByExpenseGroupId(Long groupId);
 }

@@ -16,4 +16,10 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
             ORDER BY e.expenseDate DESC, e.createdAt DESC
             """)
     List<Expense> findActiveByGroupId(@Param("groupId") Long groupId);
+    @Query("""
+        SELECT s FROM ExpenseSplit s
+        JOIN s.expense e
+        WHERE e.group.id = :groupId AND e.deletedAt IS NULL
+        """)
+    List<ExpenseSplit> findAllByExpenseGroupId(@Param("groupId") Long groupId);
 }
