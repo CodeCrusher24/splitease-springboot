@@ -22,4 +22,9 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
         WHERE e.group.id = :groupId AND e.deletedAt IS NULL
         """)
     List<ExpenseSplit> findAllByExpenseGroupId(@Param("groupId") Long groupId);
+    @Query("""
+        SELECT COALESCE(SUM(e.amountMinor), 0) FROM Expense e
+        WHERE e.paidBy.id = :userId AND e.deletedAt IS NULL
+        """)
+    long sumAmountByPaidByAndNotDeleted(@Param("userId") Long userId);  
 }
